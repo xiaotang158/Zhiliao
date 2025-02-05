@@ -54,7 +54,6 @@ public class NavButton implements IHook {
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     boolean shouldHide = false;
 
-                    // 获取 txt 和 position
                     String txt = (String) Tab_text.get(param.getResult());  // 获取当前Tab的文本
                     int position = (int) Tab_position.get(param.getResult());  // 获取当前Tab的位置
                     int[] keepPositions = {0, 4};  // 需要保持不变的位置

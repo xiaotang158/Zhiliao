@@ -18,6 +18,8 @@ public class NavButton implements IHook {
     static Method getItemId;
 
     static Field Tab_tabView;
+    static Field Tab_text;
+    static Field Tab_position;
 
     @Override
     public String getName() {

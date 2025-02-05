@@ -1,7 +1,7 @@
 package com.shatyuka.zhiliao.hooks;
 
 import android.view.View;
-import android.widget.Toast;
+
 
 import com.shatyuka.zhiliao.Helper;
 
@@ -16,8 +16,6 @@ public class NavButton implements IHook {
 
 
     static Field Tab_tabView;
-    static Method getTextMethod;
-    static Method getPositionMethod;
 
     @Override
     public String getName() {
@@ -27,11 +25,9 @@ public class NavButton implements IHook {
     @Override
     public void init(ClassLoader classLoader) throws Throwable {
 
-        Class<?> tabLayoutTabClass = classLoader.loadClass("com.google.android.material.tabs.TabLayout$Tab");
+        Class<?> tabLayoutTabClass = classLoader.loadClass("com.google.android.material.tabs.TabLayout");
 
         Tab_tabView = tabLayoutTabClass.getField("view");
-        getTextMethod = tabLayoutTabClass.getMethod("getText");
-        getPositionMethod = tabLayoutTabClass.getMethod("getPosition");
     }
 
     @Override
@@ -42,31 +38,14 @@ public class NavButton implements IHook {
                 Helper.prefs.getBoolean("switch_friendnav", false) ||
                 Helper.prefs.getBoolean("switch_panelnav", false))) {
 
-            XposedBridge.hookAllMethods(Tab_tabView.getDeclaringClass(), "select", new XC_MethodHook() {
+            XposedBridge.hookAllMethods(Tab_tabView.getDeclaringClass(), "newTab", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    boolean shouldHide = false;
-
-                    Object tabInstance = param.getResult();
-                    String txt = (String) getTextMethod.invoke(tabInstance);
-                    int position = (int) getPositionMethod.invoke(tabInstance);
-                    int[] keepPositions = {0, 4};  // 需要保持不变的位置
-                    XposedBridge.log("Hiding tab: " + txt + " at position " + position);
-                    Helper.toast("Hiding tab: " + txt + " at position " + position, Toast.LENGTH_LONG);
-
-                    // 如果txt是"推荐"或"热榜"，或position是keepPositions中的一个，则不隐藏
-                    if ("推荐".equals(txt) || "热榜".equals(txt) || (txt==null&&contains(keepPositions, position))) {
-                        shouldHide = false;  // 不隐藏
-                    } else {
-                        shouldHide = true;  // 隐藏
-                    }
-
+                    int[] keepPositions = {1, 8};  
                     // 如果应该隐藏该Tab，设置其视图为不可见
-                    if (shouldHide) {
+                    if (!contains(keepPositions, position)) {
                         View tabView = (View) Tab_tabView.get(param.getResult());
-                        if (tabView != null) {
                             tabView.setVisibility(View.GONE);  // 隐藏视图
-                        }
                     }
                 }
                 private boolean contains(int[] array, int value) {

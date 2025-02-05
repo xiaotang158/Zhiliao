@@ -37,21 +37,50 @@ public class NavButton implements IHook {
                 .filter(method -> method.getReturnType() == String.class).findFirst().get();
 
         Tab_tabView = tabLayoutTabClass.getField("view");
+        Tab_text = tabLayoutTabClass.getField("text");
+        Tab_position = tabLayoutTabClass.getField("position");
     }
 
     @Override
     public void hook() throws Throwable {
-        if (Helper.prefs.getBoolean("switch_mainswitch", false) && (Helper.prefs.getBoolean("switch_vipnav", false) || Helper.prefs.getBoolean("switch_videonav", false) || Helper.prefs.getBoolean("switch_friendnav", false) || Helper.prefs.getBoolean("switch_panelnav", false))) {
+        if (Helper.prefs.getBoolean("switch_mainswitch", false) && (
+                Helper.prefs.getBoolean("switch_vipnav", false) ||
+                Helper.prefs.getBoolean("switch_videonav", false) ||
+                Helper.prefs.getBoolean("switch_friendnav", false) ||
+                Helper.prefs.getBoolean("switch_panelnav", false))) {
+
             XposedBridge.hookMethod(Helper.getMethodByParameterTypes(BottomNavMenuView, IMenuItem), new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (("market".equals(getItemId.invoke(param.args[0])) && Helper.prefs.getBoolean("switch_vipnav", false)) ||
-                            ("video".equals(getItemId.invoke(param.args[0])) && Helper.prefs.getBoolean("switch_videonav", false)) ||
-                            ("friend".equals(getItemId.invoke(param.args[0])) && Helper.prefs.getBoolean("switch_friendnav", false)) ||
-                            ("panel".equals(getItemId.invoke(param.args[0])) && Helper.prefs.getBoolean("switch_panelnav", false)) ||
-                            ("find".equals(getItemId.invoke(param.args[0])) && Helper.prefs.getBoolean("switch_findnav", false))) {
-                        ((View) Tab_tabView.get(param.getResult())).setVisibility(View.GONE);
+                    boolean shouldHide = false;
+
+                    // 获取 txt 和 position
+                    String txt = (String) Tab_text.get(param.getResult());  // 获取当前Tab的文本
+                    int position = (int) Tab_position.get(param.getResult());  // 获取当前Tab的位置
+                    int[] keepPositions = {0, 4};  // 需要保持不变的位置
+
+                    // 如果txt是"推荐"或"热榜"，或position是keepPositions中的一个，则不隐藏
+                    if ("推荐".equals(txt) || "热榜".equals(txt) || (txt==null&&contains(keepPositions, position))) {
+                        shouldHide = false;  // 不隐藏
+                    } else {
+                        shouldHide = true;  // 隐藏
                     }
+
+                    // 如果应该隐藏该Tab，设置其视图为不可见
+                    if (shouldHide) {
+                        View tabView = (View) Tab_tabView.get(param.getResult());
+                        if (tabView != null) {
+                            tabView.setVisibility(View.GONE);  // 隐藏视图
+                        }
+                    }
+                }
+                private boolean contains(int[] array, int value) {
+                    for (int i : array) {
+                        if (i == value) {
+                            return true;
+                        }
+                    }
+                    return false;
                 }
             });
         }

@@ -18,8 +18,8 @@ public class NavButton implements IHook {
     static Method getItemId;
 
     static Field Tab_tabView;
-    static Field Tab_text;
-    static Field Tab_position;
+    static Method getTextMethod;
+    static Method getPositionMethod;
 
     @Override
     public String getName() {
@@ -39,8 +39,8 @@ public class NavButton implements IHook {
                 .filter(method -> method.getReturnType() == String.class).findFirst().get();
 
         Tab_tabView = tabLayoutTabClass.getField("view");
-        Tab_text = tabLayoutTabClass.getField("text");
-        Tab_position = tabLayoutTabClass.getField("position");
+        getTextMethod = tabLayoutTabClass.getMethod("getText");
+        getPositionMethod = tabLayoutTabClass.getMethod("getPosition");
     }
 
     @Override
@@ -56,8 +56,9 @@ public class NavButton implements IHook {
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     boolean shouldHide = false;
 
-                    String txt = (String) Tab_text.get(param.getResult());  // 获取当前Tab的文本
-                    int position = (int) Tab_position.get(param.getResult());  // 获取当前Tab的位置
+                    Object tabInstance = param.getResult();
+                    String txt = (String) getTextMethod.invoke(tabInstance);
+                    int position = (int) getPositionMethod.invoke(tabInstance);
                     int[] keepPositions = {0, 4};  // 需要保持不变的位置
 
                     // 如果txt是"推荐"或"热榜"，或position是keepPositions中的一个，则不隐藏

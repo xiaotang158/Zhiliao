@@ -60,7 +60,7 @@ public class NavButton implements IHook {
                     String txt = (String) getTextMethod.invoke(tabInstance);
                     int position = (int) getPositionMethod.invoke(tabInstance);
                     int[] keepPositions = {0, 4};  // 需要保持不变的位置
-
+                    XposedBridge.log("Hiding tab: " + txt + " at position " + position);
                     // 如果txt是"推荐"或"热榜"，或position是keepPositions中的一个，则不隐藏
                     if ("推荐".equals(txt) || "热榜".equals(txt) || (txt==null&&contains(keepPositions, position))) {
                         shouldHide = false;  // 不隐藏

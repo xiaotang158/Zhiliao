@@ -39,7 +39,7 @@ public class NavButton implements IHook {
                 Helper.prefs.getBoolean("switch_friendnav", false) ||
                 Helper.prefs.getBoolean("switch_panelnav", false))) {
 
-            XposedBridge.hookAllMethods("com.google.android.material.tabs.TabLayout", "newTab", new XC_MethodHook() {
+            XposedBridge.hookAllMethods(Class.forName("com.google.android.material.tabs.TabLayout"), "newTab", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     int[] keepPositions = {1, 8};  

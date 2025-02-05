@@ -16,7 +16,7 @@ public class NavButton implements IHook {
 
 
     static Field Tab_tabView;
-    static int index;
+    static int index = 0; 
 
     @Override
     public String getName() {
@@ -29,6 +29,8 @@ public class NavButton implements IHook {
         Class<?> tabLayoutTabClass = classLoader.loadClass("com.google.android.material.tabs.TabLayout$Tab");
 
         Tab_tabView = tabLayoutTabClass.getField("view");
+        Tab_tabView.setAccessible(true);
+
     }
 
     @Override
@@ -46,7 +48,7 @@ public class NavButton implements IHook {
                     // 如果应该隐藏该Tab，设置其视图为不可见
                     if (!contains(keepPositions, index++)) {
                         View tabView = (View) Tab_tabView.get(param.getResult());
-                            tabView.setVisibility(View.GONE);  // 隐藏视图
+                        tabView.setVisibility(View.GONE);  // 隐藏视图
                     }
                 }
                 private boolean contains(int[] array, int value) {

@@ -16,6 +16,7 @@ public class NavButton implements IHook {
 
 
     static Field Tab_tabView;
+    static int index;
 
     @Override
     public String getName() {
@@ -43,7 +44,7 @@ public class NavButton implements IHook {
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     int[] keepPositions = {1, 8};  
                     // 如果应该隐藏该Tab，设置其视图为不可见
-                    if (!contains(keepPositions, position)) {
+                    if (!contains(keepPositions, index++)) {
                         View tabView = (View) Tab_tabView.get(param.getResult());
                             tabView.setVisibility(View.GONE);  // 隐藏视图
                     }

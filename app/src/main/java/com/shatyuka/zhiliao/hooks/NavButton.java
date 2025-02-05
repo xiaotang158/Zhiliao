@@ -13,10 +13,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 
 public class NavButton implements IHook {
-    static Class<?> BottomNavMenuView;
-    static Class<?> IMenuItem;
 
-    static Method getItemId;
 
     static Field Tab_tabView;
     static Method getTextMethod;
@@ -29,15 +26,8 @@ public class NavButton implements IHook {
 
     @Override
     public void init(ClassLoader classLoader) throws Throwable {
-        BottomNavMenuView = classLoader.loadClass("com.zhihu.android.bottomnav.core.BottomNavMenuView");
 
         Class<?> tabLayoutTabClass = classLoader.loadClass("com.google.android.material.tabs.TabLayout$Tab");
-        IMenuItem = Arrays.stream(BottomNavMenuView.getDeclaredMethods())
-                .filter(method -> method.getReturnType() == tabLayoutTabClass)
-                .map(method -> method.getParameterTypes()[0]).findFirst().get();
-
-        getItemId = Arrays.stream(IMenuItem.getDeclaredMethods())
-                .filter(method -> method.getReturnType() == String.class).findFirst().get();
 
         Tab_tabView = tabLayoutTabClass.getField("view");
         getTextMethod = tabLayoutTabClass.getMethod("getText");
@@ -52,7 +42,7 @@ public class NavButton implements IHook {
                 Helper.prefs.getBoolean("switch_friendnav", false) ||
                 Helper.prefs.getBoolean("switch_panelnav", false))) {
 
-            XposedBridge.hookMethod(Helper.getMethodByParameterTypes(BottomNavMenuView, IMenuItem), new XC_MethodHook() {
+            XposedBridge.hookAllMethods(Tab_tabView.getDeclaringClass(), "select", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     boolean shouldHide = false;

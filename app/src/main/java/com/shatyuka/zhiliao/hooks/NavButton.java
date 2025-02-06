@@ -1,6 +1,7 @@
 package com.shatyuka.zhiliao.hooks;
 
 import android.view.View;
+import android.os.Handler;
 import com.shatyuka.zhiliao.Helper;
 import java.lang.reflect.Field;
 import de.robv.android.xposed.XC_MethodHook;
@@ -37,12 +38,17 @@ public class NavButton implements IHook {
             XposedBridge.hookAllMethods(BottomNavMenuView, "newTab", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    int[] keepPositions = {0,7};  // 保留的 Tab 位置
+                    int[] keepPositions = {0,2,3,7};  // 保留的 Tab 位置
                     // 判断 Tab 的位置，是否需要隐藏
                     if (!contains(keepPositions, index++)) {
                         // 获取 Tab 的视图并隐藏
                         View tabView = (View) Tab_tabView.get(param.getResult());
-                        tabView.setVisibility(View.GONE);  // 隐藏 Tab
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                tabView.setVisibility(View.GONE);  // 隐藏 Tab
+                            }
+                        }, 1);
                     }
                 }
 

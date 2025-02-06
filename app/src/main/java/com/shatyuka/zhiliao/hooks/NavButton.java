@@ -33,8 +33,7 @@ public class NavButton implements IHook {
             Helper.prefs.getBoolean("switch_friendnav", false) ||
             Helper.prefs.getBoolean("switch_panelnav", false))) {
 
-            // Hook TabLayout 的 newTab 方法
-            XposedBridge.hookAllMethods(Class.forName("com.google.android.material.tabs.TabLayout"), "newTab", new XC_MethodHook() {
+            XposedBridge.hookAllMethods(classLoader.loadClass("com.google.android.material.tabs.TabLayout"), "newTab", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     int[] keepPositions = {1, 8};  // 保留的 Tab 位置

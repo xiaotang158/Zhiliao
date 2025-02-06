@@ -37,7 +37,7 @@ public class NavButton implements IHook {
             XposedBridge.hookAllMethods(BottomNavMenuView, "newTab", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    int[] keepPositions = {2,3,7,8};  // 保留的 Tab 位置
+                    int[] keepPositions = {0,7};  // 保留的 Tab 位置
                     // 判断 Tab 的位置，是否需要隐藏
                     if (!contains(keepPositions, index++)) {
                         // 获取 Tab 的视图并隐藏

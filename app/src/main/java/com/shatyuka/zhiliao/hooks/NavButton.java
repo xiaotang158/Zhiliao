@@ -7,7 +7,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 
 public class NavButton implements IHook {
-
+    static Class<?> BottomNavMenuView;
     static Field Tab_tabView;
     static int index = 0;
 
@@ -20,6 +20,7 @@ public class NavButton implements IHook {
     public void init(ClassLoader classLoader) throws Throwable {
         // 获取 TabLayout$Tab 的 view 字段
         Class<?> tabLayoutTabClass = classLoader.loadClass("com.google.android.material.tabs.TabLayout$Tab");
+        BottomNavMenuView = classLoader.loadClass("com.google.android.material.tabs.TabLayout");
         Tab_tabView = tabLayoutTabClass.getDeclaredField("view");
         Tab_tabView.setAccessible(true);
     }
@@ -33,7 +34,7 @@ public class NavButton implements IHook {
             Helper.prefs.getBoolean("switch_friendnav", false) ||
             Helper.prefs.getBoolean("switch_panelnav", false))) {
 
-            XposedBridge.hookAllMethods(classLoader.loadClass("com.google.android.material.tabs.TabLayout"), "newTab", new XC_MethodHook() {
+            XposedBridge.hookAllMethods(BottomNavMenuView, "newTab", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     int[] keepPositions = {1, 8};  // 保留的 Tab 位置

@@ -2,6 +2,7 @@ package com.shatyuka.zhiliao.hooks;
 
 import android.view.View;
 import android.os.Handler;
+import android.os.Looper;
 import com.shatyuka.zhiliao.Helper;
 import java.lang.reflect.Field;
 import de.robv.android.xposed.XC_MethodHook;

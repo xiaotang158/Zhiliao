@@ -33,7 +33,7 @@ public class VIPBanner implements IHook {
                 XposedBridge.hookAllMethods(MoreHybridView, "onAttachedToWindow", new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                         
+                    XposedBridge.log("[Zhiliao1] " + param.thisObject);
                     if (MoreHybridStat) return; // 只执行一次
                          
                     View view = (View) param.thisObject;
@@ -59,6 +59,7 @@ public class VIPBanner implements IHook {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     if (ZHRecyclerStat) return; // 只执行一次
+                    XposedBridge.log("[Zhiliao2] " + param.getResult());
 
                     View view = (View) param.thisObject;
                                          XposedBridge.log("[Zhiliao] " + view);

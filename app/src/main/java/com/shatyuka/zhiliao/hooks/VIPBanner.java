@@ -38,8 +38,6 @@ public class VIPBanner implements IHook {
             Helper.prefs.getBoolean("switch_vipbanner", false)) {
             
             XposedBridge.hookMethod(MonAttachedToWindow, new XC_MethodHook() {
-                                                                   XposedBridge.log("[Zhiliao9] " );
-
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                                  XposedBridge.log("[Zhiliao1] " + param);
@@ -60,7 +58,6 @@ public class VIPBanner implements IHook {
             });
 
             XposedBridge.hookMethod(ZonAttachedToWindow, new XC_MethodHook() {
-                                                  XposedBridge.log("[Zhiliao9] " );
 
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {

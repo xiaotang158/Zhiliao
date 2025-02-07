@@ -9,6 +9,8 @@ import com.shatyuka.zhiliao.Helper;
 public class VIPBanner implements IHook {
      static Class<?> MoreHybridView;
      static Class<?> ZHRecyclerView;
+     static Field MoreHybrid_View;
+     static Field ZHRecycler_View;
      boolean MoreHybridStat = false;
      boolean ZHRecyclerStat = false;
 
@@ -21,6 +23,10 @@ public class VIPBanner implements IHook {
     public void init(ClassLoader classLoader) throws Throwable {
         MoreHybridView = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.more.widget.MoreHybridView");
         ZHRecyclerView = classLoader.loadClass("com.zhihu.android.base.widget.ZHRecyclerView");
+        MoreHybrid_View = MoreHybridView.getDeclaredField("view");
+        MoreHybrid_View.setAccessible(true);
+        ZHRecycler_View = ZHRecyclerView.getDeclaredField("view");
+        ZHRecycler_View.setAccessible(true);
     }
 
     @Override
@@ -36,7 +42,7 @@ public class VIPBanner implements IHook {
                          
                     if (MoreHybridStat) return; // 只执行一次
                          
-                    View view = (View) MoreHybridView.get(param.getResult());
+                    View view = (View) MoreHybrid_View.get(param.getResult());
 
                     int viewId = view.getId();
 
@@ -59,7 +65,7 @@ public class VIPBanner implements IHook {
                     protected void afterHookedMethod(MethodHookParam param) {
                     if (ZHRecyclerStat) return; // 只执行一次
 
-                    View view = (View) ZHRecyclerView.get(param.getResult());
+                    View view = (View) ZHRecycler_View.get(param.getResult());
                     int viewId = view.getId();
 
                     if (viewId != View.NO_ID && viewId != 1) { // 过滤无效 ID

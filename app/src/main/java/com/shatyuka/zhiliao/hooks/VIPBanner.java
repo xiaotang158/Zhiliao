@@ -40,8 +40,7 @@ public class VIPBanner implements IHook {
                     int viewId = view.getId();
 
                     if (viewId != View.NO_ID && viewId != 1) { // 过滤无效 ID
-                        Resources res = view.getContext().getResources();
-                        String resourceName = res.getResourceEntryName(viewId);
+                         String resourceName = view.getContext().getResources().getResourceEntryName(viewId);
 
                         if ("hybrid_layout".equals(resourceName)) { // 判断 ID
                             view.setVisibility(View.GONE); // 隐藏 View
@@ -63,8 +62,7 @@ public class VIPBanner implements IHook {
                     int viewId = view.getId();
 
                     if (viewId != View.NO_ID && viewId != 1) { // 过滤无效 ID
-                        Resources res = view.getContext().getResources();
-                        String resourceName = res.getResourceEntryName(viewId);
+                        String resourceName = view.getContext().getResources().getResourceEntryName(viewId);
 
                         if ("function_panel".equals(resourceName)) { // 判断 ID
                             view.setVisibility(View.GONE); // 隐藏 View

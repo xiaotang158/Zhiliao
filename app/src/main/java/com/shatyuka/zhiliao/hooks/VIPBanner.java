@@ -18,6 +18,8 @@ public class VIPBanner implements IHook {
 
     @Override
     public String getName() {
+                                                           XposedBridge.log("[隐藏会员卡片] " );
+
         return "隐藏会员卡片";
     }
 
@@ -36,10 +38,15 @@ public class VIPBanner implements IHook {
             Helper.prefs.getBoolean("switch_vipbanner", false)) {
             
             XposedBridge.hookMethod(MonAttachedToWindow, new XC_MethodHook() {
+                                                                   XposedBridge.log("[Zhiliao9] " );
+
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                 XposedBridge.log("[Zhiliao1] " + param);
                     super.afterHookedMethod(param);
                     if (MoreHybridStat && param.thisObject.getClass().getName().equals(MoreHybridView.getName())) {
+                                                          XposedBridge.log("[Zhiliao2] " + param.thisObject);
+
                         View view = (View) param.thisObject;
                         try {
                             String name = view.getContext().getResources().getResourceEntryName(view.getId());
@@ -53,10 +60,16 @@ public class VIPBanner implements IHook {
             });
 
             XposedBridge.hookMethod(ZonAttachedToWindow, new XC_MethodHook() {
+                                                  XposedBridge.log("[Zhiliao9] " );
+
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                                                      XposedBridge.log("[Zhiliao3] " + param);
+
                     super.afterHookedMethod(param);
                     if (ZHRecyclerStat && param.thisObject.getClass().getName().equals(ZHRecyclerView.getName())) {
+                                                                                   XposedBridge.log("[Zhiliao4] " + param.thisObject);
+
                         View view = (View) param.thisObject;
                         try {
                             String name = view.getContext().getResources().getResourceEntryName(view.getId());

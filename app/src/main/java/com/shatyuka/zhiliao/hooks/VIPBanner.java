@@ -27,11 +27,7 @@ public class VIPBanner implements IHook {
     public void init(ClassLoader classLoader) throws Throwable {
         MoreHybridView = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.more.widget.MoreHybridView");
         ZHRecyclerView = classLoader.loadClass("com.zhihu.android.base.widget.ZHRecyclerView");
-       ZonAttachedToWindow = ZHRecyclerView.getMethod("onViewAdded");
-          XposedBridge.log("zhiliao-n1 " +ZonAttachedToWindow);
-          ZonAttachedToWindow = ZHRecyclerView.getDeclaredMethod("onViewAdded");
-          ZonAttachedToWindow.setAccessible(true);
-          XposedBridge.log("zhiliao-n2 " +ZonAttachedToWindow);
+  
 
       
     }
@@ -55,7 +51,7 @@ public class VIPBanner implements IHook {
                 }
             });
 
-            XposedBridge.hookMethod(ZonAttachedToWindow, new XC_MethodHook() {
+       XposedBridge.hookAllMethods(ZHRecyclerView, "onViewAdded", new XC_MethodHook() {
 
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {

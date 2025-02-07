@@ -35,8 +35,9 @@ public class VIPBanner implements IHook {
                     protected void afterHookedMethod(MethodHookParam param) {
                          
                     if (MoreHybridStat) return; // 只执行一次
+                         
+                    View view = (View) MoreHybridView.get(param.getResult());
 
-                    View view = (View) param.thisObject;
                     int viewId = view.getId();
 
                     if (viewId != View.NO_ID && viewId != 1) { // 过滤无效 ID
@@ -58,7 +59,7 @@ public class VIPBanner implements IHook {
                     protected void afterHookedMethod(MethodHookParam param) {
                     if (ZHRecyclerStat) return; // 只执行一次
 
-                    View view = (View) param.thisObject;
+                    View view = (View) ZHRecyclerView.get(param.getResult());
                     int viewId = view.getId();
 
                     if (viewId != View.NO_ID && viewId != 1) { // 过滤无效 ID

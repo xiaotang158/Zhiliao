@@ -268,7 +268,7 @@ public class Horizontal implements IHook {
     private static ViewParent findViewParentIfNeeds(View v) {
         ViewParent parent = v.getParent();
         if (parent == null) return null;
-        if (MixPagerContainer.isInstance(parent)) {
+        if (MixPagerContainer != null &&MixPagerContainer.isInstance(parent)) {
             return parent;
         } else if (parent instanceof View) {
             return findViewParentIfNeeds((View) parent);

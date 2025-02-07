@@ -1,6 +1,7 @@
 package com.shatyuka.zhiliao.hooks;
 
 import android.view.View;
+import java.lang.reflect.Field;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import com.shatyuka.zhiliao.Helper;

@@ -3,10 +3,14 @@ package com.shatyuka.zhiliao.hooks;
 import android.view.View;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import com.shatyuka.zhiliao.Helper;
+
 
 public class VIPBanner implements IHook {
      static Class<?> MoreHybridView;
      static Class<?> ZHRecyclerView;
+     boolean MoreHybridStat = false;
+     boolean ZHRecyclerStat = false;
 
     @Override
     public String getName() {
@@ -29,7 +33,22 @@ public class VIPBanner implements IHook {
                 XposedBridge.hookAllMethods(MoreHybridView, "onAttachedToWindow", new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) {
-                        ((View) param.thisObject).setVisibility(View.GONE);
+                         
+                    if (MoreHybridStat) return; // 只执行一次
+
+                    View view = (View) param.thisObject;
+                    int viewId = view.getId();
+
+                    if (viewId != View.NO_ID && viewId != 1) { // 过滤无效 ID
+                        Resources res = view.getContext().getResources();
+                        String resourceName = res.getResourceEntryName(viewId);
+
+                        if ("hybrid_layout".equals(resourceName)) { // 判断 ID
+                            view.setVisibility(View.GONE); // 隐藏 View
+                            MoreHybridStat = true; // 避免重复执行
+                        }
+                    }
+                }
                     }
                 });
             
@@ -38,7 +57,21 @@ public class VIPBanner implements IHook {
                 XposedBridge.hookAllMethods(ZHRecyclerView, "onAttachedToWindow", new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) {
-                        ((View) param.thisObject).setVisibility(View.GONE);
+                    if (ZHRecyclerStat) return; // 只执行一次
+
+                    View view = (View) param.thisObject;
+                    int viewId = view.getId();
+
+                    if (viewId != View.NO_ID && viewId != 1) { // 过滤无效 ID
+                        Resources res = view.getContext().getResources();
+                        String resourceName = res.getResourceEntryName(viewId);
+
+                        if ("function_panel".equals(resourceName)) { // 判断 ID
+                            view.setVisibility(View.GONE); // 隐藏 View
+                            ZHRecyclerStat = true; // 避免重复执行
+                        }
+                    }
+                }
                     }
                 });
             

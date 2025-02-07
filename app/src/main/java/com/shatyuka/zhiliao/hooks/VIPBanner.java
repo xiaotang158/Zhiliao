@@ -27,13 +27,8 @@ public class VIPBanner implements IHook {
     public void init(ClassLoader classLoader) throws Throwable {
         MoreHybridView = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.more.widget.MoreHybridView");
         ZHRecyclerView = classLoader.loadClass("com.zhihu.android.base.widget.ZHRecyclerView");
-          MonAttachedToWindow = MoreHybridView.getMethod("onAttachedToWindow"); 
        ZonAttachedToWindow = ZHRecyclerView.getMethod("onAttachedToWindow");
-         XposedBridge.log("zhiliao-m1 " +MonAttachedToWindow);
           XposedBridge.log("zhiliao-n1 " +ZonAttachedToWindow);
-          MonAttachedToWindow = MoreHybridView.getDeclaredMethod("onAttachedToWindow");
-          MonAttachedToWindow.setAccessible(true);
- XposedBridge.log("zhiliao-m2 " +MonAttachedToWindow);
           ZonAttachedToWindow = ZHRecyclerView.getDeclaredMethod("onAttachedToWindow");
           ZonAttachedToWindow.setAccessible(true);
           XposedBridge.log("zhiliao-n2 " +ZonAttachedToWindow);
@@ -46,22 +41,16 @@ public class VIPBanner implements IHook {
         if (Helper.prefs.getBoolean("switch_mainswitch", false) &&
             Helper.prefs.getBoolean("switch_vipbanner", false)) {
             
-            XposedBridge.hookMethod(MonAttachedToWindow, new XC_MethodHook() {
+       XposedBridge.hookAllMethods(MoreHybridView, "onFinishInflate", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                 XposedBridge.log("[Zhiliao1] " + param);
+                    XposedBridge.log("[Zhiliao1] " + param);
                     super.afterHookedMethod(param);
-                    if (MoreHybridStat && param.thisObject.getClass().getName().equals(MoreHybridView.getName())) {
-                                                          XposedBridge.log("[Zhiliao2] " + param.thisObject);
-
+                    if (MoreHybridStat) {
+                        XposedBridge.log("[Zhiliao2] " + param.thisObject);
                         View view = (View) param.thisObject;
-                        try {
-                            String name = view.getContext().getResources().getResourceEntryName(view.getId());
-                            if ("hybrid_layout".equals(name)) {                          
-                                view.setVisibility(View.GONE);
-                                MoreHybridStat = false;
-                            }
-                        } catch (Resources.NotFoundException ignored) {}
+                        view.setVisibility(View.GONE);
+                        MoreHybridStat = false;
                     }
                 }
             });

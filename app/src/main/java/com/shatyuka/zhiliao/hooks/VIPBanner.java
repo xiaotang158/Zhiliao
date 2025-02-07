@@ -1,16 +1,20 @@
 package com.shatyuka.zhiliao.hooks;
 
+import android.content.res.Resources;
+import java.lang.reflect.Method;
 import android.view.View;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import com.shatyuka.zhiliao.Helper;
 
-
 public class VIPBanner implements IHook {
      static Class<?> MoreHybridView;
      static Class<?> ZHRecyclerView;
-     boolean MoreHybridStat = false;
-     boolean ZHRecyclerStat = false;
+     static Method MonAttachedToWindow;
+     static Method ZonAttachedToWindow;
+
+     boolean MoreHybridStat = true;
+     boolean ZHRecyclerStat = true;
 
     @Override
     public String getName() {
@@ -21,62 +25,53 @@ public class VIPBanner implements IHook {
     public void init(ClassLoader classLoader) throws Throwable {
         MoreHybridView = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.more.widget.MoreHybridView");
         ZHRecyclerView = classLoader.loadClass("com.zhihu.android.base.widget.ZHRecyclerView");
+
+        MonAttachedToWindow = MoreHybridView.getDeclaredMethod("onAttachedToWindow");
+        ZonAttachedToWindow = ZHRecyclerView.getDeclaredMethod("onAttachedToWindow");
     }
 
     @Override
     public void hook() throws Throwable {
-        if (Helper.prefs != null &&
-            Helper.prefs.getBoolean("switch_mainswitch", false) &&
+        if (Helper.prefs.getBoolean("switch_mainswitch", false) &&
             Helper.prefs.getBoolean("switch_vipbanner", false)) {
-
             
-                XposedBridge.hookAllMethods(MoreHybridView, "onAttachedToWindow", new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    XposedBridge.log("[Zhiliao1] " + param.thisObject);
-                    if (MoreHybridStat) return; // 只执行一次
-                         
-                    View view = (View) param.thisObject;
-                                         XposedBridge.log("[Zhiliao] " + view);
-
-                    int viewId = view.getId();
-
-                    if (viewId != View.NO_ID && viewId != 1) { // 过滤无效 ID
-                         String resourceName = view.getContext().getResources().getResourceEntryName(viewId);
-
-                        if ("hybrid_layout".equals(resourceName)) { // 判断 ID
-                            view.setVisibility(View.GONE); // 隐藏 View
-                            MoreHybridStat = true; // 避免重复执行
-                        }
+            XposedBridge.hookMethod(MonAttachedToWindow, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    super.afterHookedMethod(param);
+                    if (MoreHybridStat && param.thisObject.getClass().getName().equals(MoreHybridView.getName())) {
+                        View view = (View) param.thisObject;
+                        try {
+                            String name = view.getContext().getResources().getResourceEntryName(view.getId());
+                            if ("hybrid_layout".equals(name)) {                          
+                                view.setVisibility(View.GONE);
+                                MoreHybridStat = false;
+                            }
+                        } catch (Resources.NotFoundException ignored) {}
                     }
-                
+                }
+            });
+
+            XposedBridge.hookMethod(ZonAttachedToWindow, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    super.afterHookedMethod(param);
+                    if (ZHRecyclerStat && param.thisObject.getClass().getName().equals(ZHRecyclerView.getName())) {
+                        View view = (View) param.thisObject;
+                        try {
+                            String name = view.getContext().getResources().getResourceEntryName(view.getId());
+                            if ("function_panel".equals(name) ||
+                                "new_function_panel".equals(name) ||
+                                "common_items".equals(name) ||
+                                "new_common_items".equals(name)) {
+                                
+                                view.setVisibility(View.GONE);
+                                ZHRecyclerStat = false;
+                            }
+                        } catch (Resources.NotFoundException ignored) {}
                     }
-                });
-            
-
-            
-                XposedBridge.hookAllMethods(ZHRecyclerView, "onAttachedToWindow", new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (ZHRecyclerStat) return; // 只执行一次
-                    XposedBridge.log("[Zhiliao2] " + param.getResult());
-
-                    View view = (View) param.thisObject;
-                                         XposedBridge.log("[Zhiliao] " + view);
-                    int viewId = view.getId();
-
-                    if (viewId != View.NO_ID && viewId != 1) { // 过滤无效 ID
-                        String resourceName = view.getContext().getResources().getResourceEntryName(viewId);
-
-                        if ("function_panel".equals(resourceName)) { // 判断 ID
-                            view.setVisibility(View.GONE); // 隐藏 View
-                            ZHRecyclerStat = true; // 避免重复执行
-                        }
-                    }
-                
-                    }
-                });
-            
+                }
+            });
         }
     }
 }

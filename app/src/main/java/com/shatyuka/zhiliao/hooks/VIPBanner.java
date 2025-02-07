@@ -47,7 +47,7 @@ public class VIPBanner implements IHook {
                             MoreHybridStat = true; // 避免重复执行
                         }
                     }
-                }
+                
                     }
                 });
             
@@ -69,7 +69,7 @@ public class VIPBanner implements IHook {
                             ZHRecyclerStat = true; // 避免重复执行
                         }
                     }
-                }
+                
                     }
                 });
             

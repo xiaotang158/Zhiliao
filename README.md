@@ -58,12 +58,6 @@
 ## 帮助
 [Github Wiki](https://github.com/shatyuka/Zhiliao/wiki)
 
-## 下载
-[Github Release](https://github.com/shatyuka/Zhiliao/releases/latest)
-
-[Xposed Repo](https://repo.xposed.info/module/com.shatyuka.zhiliao)
-
-[蓝奏云](https://wwa.lanzoux.com/b00tscbwd) 密码:1hax
 
 ## License
 

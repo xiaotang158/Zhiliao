@@ -5,6 +5,7 @@ import android.view.View;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import com.shatyuka.zhiliao.Helper;
+import de.robv.android.xposed.XposedHelpers;
 
 public class VIPBanner implements IHook {
      static Class<?> MoreHybridView;
@@ -44,7 +45,7 @@ public class VIPBanner implements IHook {
        //              }
        //          }
        //      });
-       XposedBridge.findAndHookMethod(MoreHybridView.class,"a",ZhihuMoreA.class, new XC_MethodHook() {
+       XposedHelpers.findAndHookMethod(MoreHybridView.class,"a",ZhihuMoreA, new XC_MethodHook() {
                   @Override
                   protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                       param.setResult(null);

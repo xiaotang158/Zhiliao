@@ -2,6 +2,8 @@ package com.shatyuka.zhiliao.hooks;
 
 import android.content.res.Resources;
 import android.view.View;
+import android.content.Context;
+import android.util.AttributeSet;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import com.shatyuka.zhiliao.Helper;
@@ -11,7 +13,7 @@ public class VIPBanner implements IHook {
      static Class<?> MoreHybridView;
      static Class<?> ZHRecyclerView;
      static Class<?> ZhihuMoreA;
-
+     static Class<?> VipEntranceView;
 
      boolean MoreHybridStat = true;
      boolean ZHRecyclerStat = true;
@@ -26,7 +28,8 @@ public class VIPBanner implements IHook {
     public void init(ClassLoader classLoader) throws Throwable {
         MoreHybridView = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.more.widget.MoreHybridView");
         ZHRecyclerView = classLoader.loadClass("com.zhihu.android.base.widget.ZHRecyclerView");
-        ZhihuMoreA = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.more.a");   
+        ZhihuMoreA = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.more.a");
+        VipEntranceView = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.more.widget.VipEntranceView"); 
     }
 
     @Override
@@ -44,7 +47,7 @@ public class VIPBanner implements IHook {
        //                  MoreHybridStat = false;
        //              }
        //          }
-       //      });
+       //      });      
        XposedHelpers.findAndHookMethod(MoreHybridView,"a",ZhihuMoreA, new XC_MethodHook() {
                   @Override
                   protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -52,7 +55,14 @@ public class VIPBanner implements IHook {
                   }
               }
           );   
-
+       XposedHelpers.findAndHookConstructor(VipEntranceView,Context.class,AttributeSet.class,new XC_MethodHook() {
+                 @Override
+                 protected void afterHookedMethod(MethodHookParam param)
+                         throws Throwable {
+                     ((View) param.thisObject).setVisibility(View.GONE);
+                 }
+             }
+          );   
        XposedBridge.hookAllMethods(ZHRecyclerView, "onScrollChanged", new XC_MethodHook() {
 
                 @Override

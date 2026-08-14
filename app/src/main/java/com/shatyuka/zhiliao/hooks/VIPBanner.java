@@ -25,7 +25,7 @@ public class VIPBanner implements IHook {
     public void init(ClassLoader classLoader) throws Throwable {
         MoreHybridView = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.more.widget.MoreHybridView");
         ZHRecyclerView = classLoader.loadClass("com.zhihu.android.base.widget.ZHRecyclerView");
-        ZhihuMoreA = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.more.a")   
+        ZhihuMoreA = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.more.a");   
     }
 
     @Override

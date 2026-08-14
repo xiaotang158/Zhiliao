@@ -45,13 +45,13 @@ public class VIPBanner implements IHook {
        //              }
        //          }
        //      });
-       XposedHelpers.findAndHookMethod(MoreHybridView.class,"a",ZhihuMoreA, new XC_MethodHook() {
+       XposedHelpers.findAndHookMethod(MoreHybridView,"a",ZhihuMoreA, new XC_MethodHook() {
                   @Override
                   protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                       param.setResult(null);
                   }
               }
-          );      
+          );   
 
        XposedBridge.hookAllMethods(ZHRecyclerView, "onScrollChanged", new XC_MethodHook() {
 

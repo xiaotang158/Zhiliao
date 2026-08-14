@@ -32,17 +32,24 @@ public class VIPBanner implements IHook {
         if (Helper.prefs.getBoolean("switch_mainswitch", false) &&
             Helper.prefs.getBoolean("switch_vipbanner", false)) {
             
-       XposedBridge.hookAllMethods(MoreHybridView, "onFinishInflate", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    super.afterHookedMethod(param);
-                    if (MoreHybridStat) {
-                        View view = (View) param.thisObject;
-                        view.setVisibility(View.GONE);
-                        MoreHybridStat = false;
-                    }
-                }
-            });
+       // XposedBridge.hookAllMethods(MoreHybridView, "onFinishInflate", new XC_MethodHook() {
+       //          @Override
+       //          protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+       //              super.afterHookedMethod(param);
+       //              if (MoreHybridStat) {
+       //                  View view = (View) param.thisObject;
+       //                  view.setVisibility(View.GONE);
+       //                  MoreHybridStat = false;
+       //              }
+       //          }
+       //      });
+       XposedHelpers.findAndHookMethod(MoreHybridView.class,"a",com.zhihu.android.app.ui.fragment.more.more.a.class, new XC_MethodHook() {
+                  @Override
+                  protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                      param.setResult(null);
+                  }
+              }
+          );      
 
        XposedBridge.hookAllMethods(ZHRecyclerView, "onScrollChanged", new XC_MethodHook() {
 

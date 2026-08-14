@@ -51,6 +51,7 @@ public class VIPBanner implements IHook {
        XposedHelpers.findAndHookMethod(MoreHybridView,"a",ZhihuMoreA, new XC_MethodHook() {
                   @Override
                   protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                      ((View) param.thisObject).setVisibility(View.GONE); 
                       param.setResult(null);
                   }
               }

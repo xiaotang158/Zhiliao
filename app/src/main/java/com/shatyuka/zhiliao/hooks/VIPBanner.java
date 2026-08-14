@@ -9,6 +9,7 @@ import com.shatyuka.zhiliao.Helper;
 public class VIPBanner implements IHook {
      static Class<?> MoreHybridView;
      static Class<?> ZHRecyclerView;
+     static Class<?> ZhihuMoreA;
 
 
      boolean MoreHybridStat = true;
@@ -24,7 +25,7 @@ public class VIPBanner implements IHook {
     public void init(ClassLoader classLoader) throws Throwable {
         MoreHybridView = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.more.widget.MoreHybridView");
         ZHRecyclerView = classLoader.loadClass("com.zhihu.android.base.widget.ZHRecyclerView");
-      
+        ZhihuMoreA = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.more.a")   
     }
 
     @Override
@@ -43,7 +44,7 @@ public class VIPBanner implements IHook {
        //              }
        //          }
        //      });
-       XposedHelpers.findAndHookMethod(MoreHybridView.class,"a",classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.more.a").class, new XC_MethodHook() {
+       XposedHelpers.findAndHookMethod(MoreHybridView.class,"a",ZhihuMoreA , new XC_MethodHook() {
                   @Override
                   protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                       param.setResult(null);
